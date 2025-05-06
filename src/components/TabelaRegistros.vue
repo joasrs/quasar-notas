@@ -11,7 +11,6 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { defineProps } from 'vue'
 
 const router = useRouter()
 const { notas } = defineProps({
