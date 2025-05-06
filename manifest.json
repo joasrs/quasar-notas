@@ -1,0 +1,16 @@
+{
+  "name": "Gravador de Áudio PWA",
+  "short_name": "Áudio PWA",
+  "description": "Aplicativo PWA para gravação e transcrição de áudio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976D2",
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    }
+  ]
+}
