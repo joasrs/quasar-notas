@@ -1,12 +1,11 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    component: () => import('pages/IndexPage.vue'),
   },
   {
     path: '/incluir',
-    component: () => import('layouts/IncluirLayout.vue'),
+    component: () => import('src/pages/IncluirPage.vue'),
     children: [
       {
         path: '',
@@ -14,7 +13,7 @@ const routes = [
         component: () => import('pages/IndexPage.vue'), // página para criar nova nota
       },
       {
-        path: ':id',
+        path: ':nota',
         name: 'alterar',
         component: () => import('pages/IndexPage.vue'), // mesma tela, mas com ID
       },
