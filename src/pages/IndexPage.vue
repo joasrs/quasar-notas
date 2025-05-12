@@ -7,14 +7,10 @@
     </q-header>
 
     <q-page-container>
-      <!-- <TabelaRegistros :notasRef="notasRef" /> -->
-      <q-list bordered class="q-pa-md">
+      <q-list class="q-pa-md">
         <q-item v-for="nota in notasRef" :key="nota.id" clickable @click="abrirNota(nota)">
           <q-item-section>{{ nota.titulo }}</q-item-section>
           <div class="row items-center">
-            <div class="q-mr-lg">
-              {{ new Date(nota.data || Date.now()).toLocaleDateString('pt-BR') }}
-            </div>
             <q-icon class="q-mr-lg" :name="nota.bloqueado ? 'lock' : 'lock_open'" />
             <q-btn
               dense
@@ -38,20 +34,16 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { useQuasar } from 'quasar'
 import { ref } from 'vue'
-import { Autenticacao } from 'src/services/Autenticacao'
-
-const autenticacao = new Autenticacao()
+import notificacaoService from 'src/services/notificacaoService'
+import autenticacaoService from 'src/services/autenticacaoService'
 
 const notasRef = ref(JSON.parse(localStorage.getItem('quasar-notas')) || [])
-const $q = useQuasar()
 const router = useRouter()
 
 async function abrirNota(nota) {
-  console.log(nota.bloqueado)
   if (nota.bloqueado) {
-    const permitido = await autenticacao.solicitarBiometria()
+    const permitido = await autenticacaoService.solicitarBiometria()
     if (!permitido) return
   }
 
@@ -59,36 +51,16 @@ async function abrirNota(nota) {
 }
 
 function confirmarExclusao(nota) {
-  $q.dialog({
-    title: 'Confirmar exclusão',
-    message: 'Tem certeza que deseja excluir esta nota?',
-    cancel: true,
-    persistent: true,
-  }).onOk(async () => {
-    console.log(nota)
-    if (!nota.bloqueado || (await autenticacao.solicitarBiometria())) {
-      excluirNota(nota.id)
-    }
-  })
-}
-
-function excluirNota(id) {
-  notasRef.value = notasRef.value.filter((n) => n.id !== id)
-  localStorage.setItem('quasar-notas', JSON.stringify(notasRef.value))
-  $q.notify({
-    type: 'positive',
-    message: 'Nota excluída com sucesso.',
-    position: 'top',
-    actions: [
-      {
-        icon: 'close',
-        color: 'white',
-        round: true,
-        handler: () => {
-          /* ... */
-        },
-      },
-    ],
-  })
+  notificacaoService.perguntar(
+    'Confirmar exclusão',
+    'Tem certeza que deseja excluir esta nota?',
+    async () => {
+      if (!nota.bloqueado || (await autenticacaoService.solicitarBiometria())) {
+        notasRef.value = notasRef.value.filter((n) => n.id !== nota.id)
+        localStorage.setItem('quasar-notas', JSON.stringify(notasRef.value))
+        notificacaoService.notificar('Nota excluída com sucesso.', 'positive')
+      }
+    },
+  )
 }
 </script>

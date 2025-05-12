@@ -1,15 +1,28 @@
 {
-  "name": "Gravador de Áudio PWA",
-  "short_name": "Áudio PWA",
-  "description": "Aplicativo PWA para gravação e transcrição de áudio",
+  "name": "Quasar Notas",
+  "short_name": "Quasar Notas",
+  "description": "Aplicativo PWA para registrar notas com autenticação e transcrição de audio",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1976D2",
   "icons": [
     {
-      "src": "icons/icon-72x72.png",
-      "sizes": "72x72",
+      "src": "icons/favicon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./src/assets/screenshots/desktop.png",
+      "sizes": "1915x875",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "./src/assets/screenshots/mobile.png",
+      "sizes": "467x833",
       "type": "image/png"
     }
   ]

@@ -30,12 +30,12 @@
       <div class="q-pa-sm" style="height: 500px">
         <div class="relative-position fit">
           <q-input
-            outlined
+            borderless
             v-model="notaRef.conteudo"
             type="textarea"
-            label="Digite sua nota..."
+            placeholder="Digite sua nota..."
             class="fit"
-            input-style="height: 500px; resize: none"
+            input-style="height: 500px; resize: none; font-size: 1.3em"
             @focus="campoFocadoRef = 'conteudo'"
           />
 
@@ -43,6 +43,7 @@
             round
             :icon="iconeBotaoGravadorRef"
             :color="corBotaoGravadorRef"
+            size="lg"
             class="absolute-bottom-right q-ma-md"
             @click="gravarNota"
           />
@@ -66,12 +67,10 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
-import { uid, useQuasar } from 'quasar'
-import { Autenticacao } from 'src/services/Autenticacao'
+import { uid } from 'quasar'
+import notificacaoService from 'src/services/notificacaoService'
+import autenticacaoService from 'src/services/autenticacaoService'
 
-const autenticacao = new Autenticacao()
-
-const $q = useQuasar()
 const router = useRouter()
 const route = useRoute()
 
@@ -98,7 +97,7 @@ function gravarNota() {
 
 function configurarGravadorAudio() {
   if (!gravador) {
-    //alert('Seu navegador não suporta reconhecimento de voz.')
+    notificacaoService.notificar('Seu navegador não suporta reconhecimento de voz.', 'warning')
     return
   }
 
@@ -134,25 +133,11 @@ function configurarGravadorAudio() {
 async function notaBloqueada() {
   notaRef.value.bloqueado = !notaRef.value.bloqueado
 
-  if (notaRef.value.bloqueado && !autenticacao.passkeySetada()) {
-    await autenticacao.criarPasskey()
-  } else if (!notaRef.value.bloqueado && !(await autenticacao.solicitarBiometria())) {
+  if (notaRef.value.bloqueado && !autenticacaoService.passkeySetada()) {
+    await autenticacaoService.criarPasskey()
+  } else if (!notaRef.value.bloqueado && !(await autenticacaoService.solicitarBiometria())) {
     notaRef.value.bloqueado = true
-    $q.notify({
-      type: 'warning',
-      message: `Não foi possível desbloquear a nota.`,
-      position: 'top',
-      actions: [
-        {
-          icon: 'close',
-          color: 'white',
-          round: true,
-          handler: () => {
-            /* ... */
-          },
-        },
-      ],
-    })
+    notificacaoService.notificar('Não foi possível desbloquear a nota.', 'warning')
   }
 }
 
@@ -175,21 +160,7 @@ function registrar() {
 
   localStorage.setItem('quasar-notas', JSON.stringify(notas))
 
-  $q.notify({
-    type: 'positive',
-    message: `Nota salva com sucesso.`,
-    position: 'top',
-    actions: [
-      {
-        icon: 'close',
-        color: 'white',
-        round: true,
-        handler: () => {
-          /* ... */
-        },
-      },
-    ],
-  })
+  notificacaoService.notificar('Nota salva com sucesso.', 'positive')
   router.back()
 }
 

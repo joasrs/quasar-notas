@@ -10,12 +10,10 @@ const routes = [
       {
         path: '',
         name: 'incluir',
-        component: () => import('pages/IndexPage.vue'), // página para criar nova nota
       },
       {
         path: ':nota',
         name: 'alterar',
-        component: () => import('pages/IndexPage.vue'), // mesma tela, mas com ID
       },
     ],
   },
