@@ -10,10 +10,12 @@ const routes = [
       {
         path: '',
         name: 'incluir',
+        component: () => import('src/pages/IncluirPage.vue'),
       },
       {
         path: ':nota',
         name: 'alterar',
+        component: () => import('src/pages/IncluirPage.vue'),
       },
     ],
   },
